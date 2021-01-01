@@ -163,6 +163,8 @@ public class PendingRequests {
         private static final String QUALITY_KEY = "quality";
         private static final String RESULTS_KEY = "results";
 
+        public String mediaStoreUri;
+
         // Unique int used to identify this request in any Android Permission or Activity callbacks
         public int requestCode;
 
@@ -189,6 +191,7 @@ public class PendingRequests {
             this.action = action;
 
             if (options != null) {
+                this.mediaStoreUri = options.optString("mediaStoreUri", "");
                 this.limit = options.optLong("limit", 1);
                 this.duration = options.optInt("duration", 0);
                 this.quality = options.optInt("quality", 1);
@@ -204,6 +207,7 @@ public class PendingRequests {
             this.limit = bundle.getLong(LIMIT_KEY);
             this.duration = bundle.getInt(DURATION_KEY);
             this.quality = bundle.getInt(QUALITY_KEY);
+            this.mediaStoreUri = bundle.getString("mediaStoreUri");
 
             try {
                 this.results = new JSONArray(bundle.getString(RESULTS_KEY));
@@ -216,6 +220,7 @@ public class PendingRequests {
         private Bundle toBundle() {
             Bundle bundle = new Bundle();
 
+            bundle.putString("mediaStoreUri", this.mediaStoreUri);
             bundle.putInt(ACTION_KEY, this.action);
             bundle.putLong(LIMIT_KEY, this.limit);
             bundle.putInt(DURATION_KEY, this.duration);

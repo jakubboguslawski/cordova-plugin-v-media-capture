@@ -20,7 +20,9 @@ package org.apache.cordova.mediacapture;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Field;
@@ -85,6 +87,8 @@ public class Capture extends CordovaPlugin {
     private int numPics;                            // Number of pictures before capture activity
     private Uri imageUri;
 
+    private String mediaStoreUri;
+
 //    public void setContext(Context mCtx)
 //    {
 //        if (CordovaInterface.class.isInstance(mCtx))
@@ -129,6 +133,8 @@ public class Capture extends CordovaPlugin {
         }
 
         JSONObject options = args.optJSONObject(0);
+
+        if (options != null && options.has("mediaStoreUri")) this.mediaStoreUri = options.getString("mediaStoreUri");
 
         if (action.equals("captureAudio")) {
             this.captureAudio(pendingRequests.createRequest(CAPTURE_AUDIO, options, callbackContext));
@@ -272,7 +278,7 @@ public class Capture extends CordovaPlugin {
             }
         } else {
             // Save the number of images currently on disk for later
-            this.numPics = queryImgDB(whichContentStore()).getCount();
+            this.numPics = 0; //queryImgDB(whichContentStore()).getCount();
 
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -485,6 +491,24 @@ public class Capture extends CordovaPlugin {
             // this will never happen
             e.printStackTrace();
         }
+
+        if (fp != null && fp.getName() != null) {
+            int size = 0;
+            try {
+                InputStream inputStream = this.cordova.getActivity().getContentResolver().openInputStream(data);
+                size = inputStream.available();
+                byte[] bytes = new byte[size];
+                inputStream.read(bytes);
+                inputStream.close();
+
+                File targetFile = new File(mediaStoreUri + fp.getName());
+                OutputStream outStream = new FileOutputStream(targetFile);
+                outStream.write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return obj;
     }
 

@@ -23,6 +23,7 @@
  * Encapsulates all image capture operation configuration options.
  */
 var CaptureImageOptions = function () {
+    this.mediaStoreUri = '';
     // Upper limit of images user can take. Value must be equal or greater than 1.
     this.limit = 1;
 };

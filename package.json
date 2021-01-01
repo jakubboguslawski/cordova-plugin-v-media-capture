@@ -1,6 +1,6 @@
 {
   "name": "@respondea/cordova-plugin-v-media-capture",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Cordova Media Capture Plugin V",
   "types": "./types/index.d.ts",
   "cordova": {

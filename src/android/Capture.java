@@ -501,9 +501,22 @@ public class Capture extends CordovaPlugin {
                 inputStream.read(bytes);
                 inputStream.close();
 
-                File targetFile = new File(mediaStoreUri + fp.getName());
-                OutputStream outStream = new FileOutputStream(targetFile);
-                outStream.write(bytes);
+                File subFolder = new File(mediaStoreUri);
+
+                if (!subFolder.exists()) {
+                    subFolder.mkdirs();
+                }
+
+                File thumbsSubFolder = new File(mediaStoreUri.replaceAll("/media/", "/media-thumbnails/"));
+
+                if (!thumbsSubFolder.exists()) {
+                    thumbsSubFolder.mkdirs();
+                }
+
+                FileOutputStream outputStream = new FileOutputStream(new File(subFolder, fp.getName()));
+                outputStream.write(bytes);
+                outputStream.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
